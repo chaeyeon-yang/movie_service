@@ -7,24 +7,30 @@
 "></script>
 <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- react, reactdom을 import 하는 script tag에서 production -> development로 변경하는데
+  production은 배포 모드, development는 개발 모드를 의미한다.
+  개발 모드는 버그로 이어질 수 있는 요소들을 미리 경고하는 검증코드가 포함되어 있다.-->
+
 <script type="text/babel">
-  const root=document.getElementById("root");
   function App() {
-    const [counter, setCounter]=React.useState(0);
-    const onClick = () => {
-      setCounter((state) => state + 1); 
-      /* State를 세팅하는 2가지 방법 [이전 값을 바탕으로 현재 값을 계산] 
-        1) 직접 할당: setState(state+1) ===> 이 코드는 결과 예상과 다르게 나오는 에러 발생의 가능성이 있음
-        2) 함수를 할당: setState(state=>state+1) ===> 더 안전한 방법
-      */
+    const [minutes, setMinutes] = React.useState()
+    const onChange = (event) => {
+      setMinutes(event.target.value);
     }
     return (
       <div>
-      <h3>Total clicks: {counter}</h3>
-      <button onClick={onClick}>Click me</button>
+      <h1>Super Converter</h1>
+      <label htmlFor="minutes">Minutes</label>
+      <input id="minutes" value={minutes} placeholder="Minutes" type="number"
+        onChange={onChange}/>
+        <h4>You want to convert {minutes}</h4>
+      <label htmlFor="hours">Hours</label>
+      <input id="hours" placeholder="Hours" type="number" />
     </div>
     )
   }
   ReactDOM.render(<App/>, root);
 </script>
+<!-- 1) input 옆에 쓰는 label의 for 속성은 react 에서는 htmlFor로 표시한다.
+    2) controlled component: input 태그 작성시 valuem onChange 속성을 붙여 상태를 관리-->
 </html>
