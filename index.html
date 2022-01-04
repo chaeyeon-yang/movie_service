@@ -11,31 +11,47 @@
   <script type="text/babel">
     // props은 객체 => 구조 분해 할당을 사용하면 매우 유용하다,
     // props, 삼항연산자를 이용한 style 조건부 지정도 가능하다
-    function Btn({ text, big }) {
+    function Btn({ text, changeValue }) {
+      console.log(text, 'was rendered.');
       return (
         <button
+          onClick={changeValue}
           style={{
             backgroundColor: 'tomato',
             color: 'white',
             padding: '10px 20px',
             border: 0,
             borderRadius: 10,
-            fontSize: big ? 18 : 16,
           }}
         >
           {text}
         </button>
       );
     }
+    const MemorizedBtn = React.memo(Btn);
     function App() {
+      const [value, setValue] = React.useState('Save Changes');
+      const changeValue = () => setValue('Revert Changes');
+      // 커스텀 컴포넌트에 onClick을 넣는것이 이벤트 리스너를 할당하는 것을 의미하지 않는다.
+      // (=직접 컴포넌트에 onClick 이벤트 리스너를 넣는 것과는 다르다.)
+      // 커스텀 컴포넌트에 넣은 onClick은 단지 props 중 하나일 뿐이다. 실제 html 태그에 적용되는 것이 아니다.
+      // 손수 컴포넌트에 넣어줘야 이벤트 리스너로 적용이 되는 것이다.
       return (
         <div>
-          <Btn text="Save Changes" big={true} />
-          <Btn text="Continue" />
+          <MemorizedBtn text={value} changeValue={changeValue} />
+          <MemorizedBtn text="Continue" />
         </div>
       );
     }
+    // ReactJS의 특성에 따라 컴포넌트의 상태가 바뀐다면 rerendering 된다.
+    // 따라서 React Memo를 통해 특정 컴포넌트의 상태가 바뀌지 않는다면
+    // rerendering 되는 것을 원치 않는다고 기억할 수 있다.
 
+    // 즉, 만약 이 props가 변경되지 않는다면 다시 그릴 필요가 없다는 것을 말해주는 것이다.
+    //    하지만 만약 props가 변한다면 다시 그려달라 말하는 것이다.
+
+    // 부모 컴포넌트에서 어떠한 state 변경이라도 생기면 자식 컴포넌트 들은 전부 re-render 된다.
+    // ==> 이건 추후에 어플리케이션이 느려지는 원인이 될 수도 있다!!
     ReactDOM.render(<App />, root);
   </script>
 </html>
