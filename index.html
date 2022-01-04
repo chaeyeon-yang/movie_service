@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-
   <body>
     <div id="root"></div>
   </body>
@@ -13,9 +9,9 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
-    function Btn(props) {
-      // props는 내가 넣은 모든 것을 갖는 오브젝트가 됨
-      console.log(props);
+    // props은 객체 => 구조 분해 할당을 사용하면 매우 유용하다,
+    // props, 삼항연산자를 이용한 style 조건부 지정도 가능하다
+    function Btn({ text, big }) {
       return (
         <button
           style={{
@@ -24,20 +20,22 @@
             padding: '10px 20px',
             border: 0,
             borderRadius: 10,
+            fontSize: big ? 18 : 16,
           }}
         >
-          {props.banana}
+          {text}
         </button>
       );
     }
     function App() {
       return (
         <div>
-          <Btn banana="Save Changes" />
-          <Btn banana="Continue" />
+          <Btn text="Save Changes" big={true} />
+          <Btn text="Continue" />
         </div>
       );
     }
+
     ReactDOM.render(<App />, root);
   </script>
 </html>
