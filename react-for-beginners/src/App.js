@@ -8,42 +8,37 @@ import Button from './Button';
 import styles from './App.module.css';
 import { useState, useEffect } from 'react';
 
-function App() {
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useState('');
-  const onClick = () => {
-    setValue((prev) => prev + 1);
-  };
-  const onChange = (event) => setKeyword(event.target.value);
-  console.log('i run all the time');
-  useEffect(() => {
-    console.log('CALL THE API....');
-  }, []);
+// useEffect에서 특정 컴포넌트를 destroy할 때 적용할 수 있는 함수가 있다.
+// ===> Cleanup function **
 
-  useEffect(() => {
-    if (keyword !== '' && keyword.length > 5) {
-      console.log('SEARCH FOR', keyword);
-    }
-  }, [keyword]);
-  useEffect(() => {
-    console.log("i run when 'counter' changes");
-  }, [counter]);
-  useEffect(() => {
-    console.log('i run when keyword & counter change.');
-  }, [keyword, counter]);
+// component가 파괴될 때는 react.js가 useEffect에 실행되는 함수에 작성된 return function(cleanup func)을 실행한다.
+
+// === useEffect(()=>{
+//     console.log("created:)")
+//     return () => console.log("destroyed :(")
+//     },[])
+
+function Hello() {
+  function byFn() {
+    console.log('bye :(');
+  }
+  function hiFn() {
+    console.log('created:)');
+    return byFn;
+  }
+  useEffect(hiFn, []);
+  return <h1>Hello</h1>;
+}
+function App() {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing((prev) => !prev);
   return (
     <div>
-      <input
-        value={keyword}
-        onChange={onChange}
-        type="text"
-        placeholder="Search here..."
-      />
-      <h1>{counter}</h1>
-      <button onClick={onClick}>click me</button>
+      {showing ? <Hello /> : null}
+      <button onClick={onClick}>{showing ? 'Hide' : 'Show'}</button>
     </div>
-    // state 가 변경될 때마다 re-rendering 된다
   );
 }
+// component는 단지 jsx를 return하는 function일 뿐이다.
 
 export default App;
