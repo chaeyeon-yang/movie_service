@@ -15,11 +15,7 @@ function App() {
     setToDo('');
   };
   console.log(toDos);
-  // JS와 달리 state를 직접 수정하지 않고 함수를 통해 수정한다.
 
-  // 값을 수정하는 함수의 첫 번째 인자로 현재 State를 보낸다(default)
-  // currentArray로 직접적으로 쓰게 될 경우 array 안에 또 다른 array가 생성되게 된다.
-  // 따라서 ...currentArray를 통해 array 안 원소들만 가져온다.
   return (
     <div>
       <h1>My To Dos ({toDos.length})</h1>
@@ -32,8 +28,15 @@ function App() {
         />
         <button>Add To Do</button>
       </form>
+      <hr />
+      <ul>
+        {toDos.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
     </div>
   );
 }
+// map은 하나의 array에 있는 item을 내가 원하는 무엇이든지로 바꿔주는 역할을 하고 그 후 새로운 array로 return 해준다.
 
 export default App;
