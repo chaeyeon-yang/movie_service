@@ -3,63 +3,55 @@ import styles from './App.module.css';
 import { useState, useEffect } from 'react';
 import { nominalTypeHack } from 'prop-types';
 
+// async-await 사용
 function App() {
   const [loading, setLoading] = useState(true);
-  const [converted, setConverted] = useState(false);
-  const [coins, setCoins] = useState([]);
-  const [value, setValue] = useState(43996.786053307);
-  const [dollar, setDollar] = useState(1);
+  const [movies, setMovies] = useState([]);
+  const getMovies = async () => {
+    const json = await (
+      await fetch(
+        'https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year',
+      )
+    ).json();
+    setMovies(json.data.movies);
+    setLoading(false);
+  };
   useEffect(() => {
-    fetch('https://api.coinpaprika.com/v1/tickers')
-      .then((response) => response.json())
-      .then((json) => {
-        setCoins(json);
-        setLoading(false);
-      });
+    getMovies();
   }, []);
-  const onSubmit = (event) => {
-    event.preventDefault();
-  };
-  const changeCoin = (event) => {
-    setValue(event.target.value);
-  };
-  const onChange = (event) => {
-    setDollar(event.target.value);
-  };
-  const onClick = () => setConverted(true);
-
+  //[docs] https://yts.mx/api
   return (
     <div>
-      <h1>All The Coins! {loading ? '' : `(${coins.length})`}</h1>
       {loading ? (
-        <strong>Loading...</strong>
+        <h1>Loading...</h1>
       ) : (
-        <select onChange={changeCoin}>
-          {coins.map((coin, index) => (
-            <option key={index} value={coin.quotes.USD.price}>
-              {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD
-            </option>
+        <div>
+          {movies.map((movie) => (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image} />
+              <h2>{movie.title}</h2>
+              <p>{movie.summary}</p>
+              {movie.hasOwnProperty('genres') ? (
+                <ul>
+                  {movie.genres.map((g) => (
+                    <li key={g}>{g}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
           ))}
-        </select>
+        </div>
       )}
-      <h3>{value === 0 ? null : `Convert your USD to Coin`}</h3>
-      <form onSubmit={onSubmit}>
-        <input type="number" onChange={onChange}></input>
-        <button
-          onClick={onClick}
-          style={{
-            backgroundColor: 'tomato',
-            color: 'white',
-            borderRadius: 5,
-          }}
-        >
-          Convert
-        </button>
-        <h3>
-          {converted ? `You can get ${Math.floor(dollar / value)} coins` : null}
-        </h3>
-      </form>
     </div>
+    // movie.genres.map() 에서 g는 고유한 값이므로 key 값으로 써도 된다.
+
+    // movie api 중 genres 부분을 li 로 보여주는 부분에서
+    // genres가 없는 영화가 포함되어 있는 경우가 있으므로
+    // uncaught TypeError: Cannot read properties of undefined(reading 'map)
+    // 에러가 발생하는 경우가 생긴다.
+
+    // ===> hasOwnProperty() 함수를 이용하여 genres key가 있는지 확인하는 과정이 필요하다.
   );
 }
+
 export default App;
