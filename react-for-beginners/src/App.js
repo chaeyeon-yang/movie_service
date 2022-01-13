@@ -1,42 +1,65 @@
 import Button from './Button';
 import styles from './App.module.css';
 import { useState, useEffect } from 'react';
+import { nominalTypeHack } from 'prop-types';
 
 function App() {
-  const [todo, setToDo] = useState('');
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => setToDo(event.target.value);
+  const [loading, setLoading] = useState(true);
+  const [converted, setConverted] = useState(false);
+  const [coins, setCoins] = useState([]);
+  const [value, setValue] = useState(43996.786053307);
+  const [dollar, setDollar] = useState(1);
+  useEffect(() => {
+    fetch('https://api.coinpaprika.com/v1/tickers')
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
   const onSubmit = (event) => {
     event.preventDefault();
-    if (todo === '') {
-      return;
-    }
-    setToDos((currentArray) => [todo, ...currentArray]);
-    setToDo('');
   };
-  console.log(toDos);
+  const changeCoin = (event) => {
+    setValue(event.target.value);
+  };
+  const onChange = (event) => {
+    setDollar(event.target.value);
+  };
+  const onClick = () => setConverted(true);
 
   return (
     <div>
-      <h1>My To Dos ({toDos.length})</h1>
+      <h1>All The Coins! {loading ? '' : `(${coins.length})`}</h1>
+      {loading ? (
+        <strong>Loading...</strong>
+      ) : (
+        <select onChange={changeCoin}>
+          {coins.map((coin, index) => (
+            <option key={index} value={coin.quotes.USD.price}>
+              {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD
+            </option>
+          ))}
+        </select>
+      )}
+      <h3>{value === 0 ? null : `Convert your USD to Coin`}</h3>
       <form onSubmit={onSubmit}>
-        <input
-          value={todo}
-          onChange={onChange}
-          type="text"
-          placeholder="Write your to do..."
-        />
-        <button>Add To Do</button>
+        <input type="number" onChange={onChange}></input>
+        <button
+          onClick={onClick}
+          style={{
+            backgroundColor: 'tomato',
+            color: 'white',
+            borderRadius: 5,
+          }}
+        >
+          Convert
+        </button>
+        <h3>
+          {converted ? `You can get ${Math.floor(dollar / value)} coins` : null}
+        </h3>
       </form>
-      <hr />
-      <ul>
-        {toDos.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
     </div>
   );
 }
-// map은 하나의 array에 있는 item을 내가 원하는 무엇이든지로 바꿔주는 역할을 하고 그 후 새로운 array로 return 해준다.
-
 export default App;
