@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import MovieDetail from '../components/MovieDetail';
+import styles from './Detail.module.css';
 
 // useParams 함수는 url에 있는 값 중 변경된 값을 반환해주는 함수이다.
 function Detail() {
@@ -19,9 +20,11 @@ function Detail() {
     getMovie();
   }, []);
   return (
-    <div>
+    <div className={styles.container}>
       {loading ? (
-        <h1>Loading...</h1>
+        <div className={styles.loader}>
+          <h2>Loading...</h2>
+        </div>
       ) : (
         <div>
           <MovieDetail
@@ -30,6 +33,7 @@ function Detail() {
             title={contents.title_long}
             rating={contents.rating}
             running={contents.runtime}
+            genres={contents.genres}
             desc={contents.description_full}
           />
         </div>

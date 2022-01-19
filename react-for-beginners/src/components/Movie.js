@@ -5,20 +5,17 @@ import styles from './Movie.module.css';
 function Movie({ id, coverImg, title, summary, genres }) {
   // 모든 이미지 element들은 alt 속성을 가짐
   return (
-    <div className="styles.movie">
-      <img src={coverImg} alt={title} />
-      <h2>
-        <Link to={`/movie/${id}`}>{title}</Link>
-      </h2>
-      {genres ? (
-        <ul>
-          {genres.map((g) => (
-            <li key={g}>{g}</li>
-          ))}
-        </ul>
-      ) : null}
-      <p>{summary}</p>
-      <hr></hr>
+    <div className={styles.movie}>
+      <div>
+        <img className={styles.movie__img} src={coverImg} alt={title} />
+      </div>
+      <div>
+        <div className={styles.movie__title}>
+          <Link to={`/movie/${id}`}>{title}</Link>
+        </div>
+
+        <p className={styles.movie__summary}>{summary}</p>
+      </div>
     </div>
   );
 }

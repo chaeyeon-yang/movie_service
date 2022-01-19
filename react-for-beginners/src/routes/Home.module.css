@@ -1,3 +1,20 @@
 .container {
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.movies {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(400px, 1fr));
+  grid-gap: 100px;
+  padding: 50px;
+  width: 100%;
+  padding-top: 70px;
+}
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
